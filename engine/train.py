@@ -1,14 +1,11 @@
 import os
-import numpy as np
-import torch
-import torch.nn as nn
-import torch.optim as optim
+import logging
 import mlflow
 import mlflow.pytorch
+import torch
+import torch.nn as nn
 
-from pydantic import BaseModel
-
-from app.utils.utils import cal_accuracy, load_optimizer
+from utils.utils import cal_accuracy, load_optimizer
 
 
 class Trainer(object):
@@ -22,6 +19,7 @@ class Trainer(object):
         epochs: int,
         optimizer_name: str,
         exp_name: str,
+        mlflow_run: mlflow.ActiveRun,
     ):
 
         self.device = torch.device(device)
@@ -36,7 +34,25 @@ class Trainer(object):
         )
         self.model_registry = "./runs/"
         self.exp_name = exp_name
+        self.mlflow_run = mlflow_run
         os.makedirs(self.model_registry + f"{self.exp_name}", exist_ok=True)
+
+        self.logger = logging.getLogger("Training")
+        self.logger.setLevel(logging.INFO)
+        stream_handler = logging.StreamHandler()
+        self.logger.addHandler(stream_handler)
+
+        self.logger.info(
+            f"##### Training Settings #####\n"
+            f"{' ' * 3} - Device: {self.device}\n"
+            f"{' ' * 3} - Model: {model.__class__.__name__}\n"
+            f"{' ' * 3} - Optimizer: {optimizer_name}\n"
+            f"{' ' * 3} - Learning Rate: {lr}\n"
+            f"{' ' * 3} - Weight Decay: {weight_decay}\n"
+            f"{' ' * 3} - Epochs: {epochs}\n"
+            f"{' ' * 3} - Experiment Name: {exp_name}\n"
+            f"#############################\n"
+        )
 
     def train_on_batch(self, model, train_loader):
         model.train()
@@ -81,10 +97,10 @@ class Trainer(object):
             train_loss, train_acc = self.train_on_batch(self.model, train_loader)
             valid_loss, valid_acc = self.valid_on_batch(self.model, valid_loader)
 
-            print(f"{'#'*50}")
+            self.logger.info(f"{'#'*50}")
 
             if best_loss > valid_loss:
-                print(
+                self.logger.info(
                     f"# loss decreased at epoch {epoch+1} ({best_loss} --> {valid_loss}), saving model..."
                 )
                 best_loss = valid_loss
@@ -100,11 +116,25 @@ class Trainer(object):
             mlflow.log_metric("valid_acc", valid_acc, step=epoch)
             mlflow.log_metric("lr", self.optimizer.param_groups[0]["lr"])
 
-            print(f"Epoch {epoch+1}/{self.epochs}")
-            print(f"Train loss: {train_loss:.3f}, Train accuracy: {train_acc:.3f}")
-            print(f"Valid loss: {valid_loss:.3f}, Valid accuracy: {valid_acc:.3f}\n")
+            self.logger.info(f"Epoch {epoch+1}/{self.epochs}")
+            self.logger.info(
+                f"Train loss: {train_loss:.3f}, Train accuracy: {train_acc:.3f}"
+            )
+            self.logger.info(
+                f"Valid loss: {valid_loss:.3f}, Valid accuracy: {valid_acc:.3f}\n"
+            )
 
         mlflow.pytorch.log_model(self.model, "models")
-        # 모델 등록
-        model_uri = f"runs:/{mlflow.active_run().info.run_id}/model"
-        mlflow.register_model(model_uri, params.exp_name)
+        # Register the model
+        model_uri = f"runs:/{self.mlflow_run.info.run_id}/model"
+        mlflow.register_model(model_uri, self.exp_name)
+
+        # Get the latest model version
+        model_version = mlflow.get_latest_versions(self.exp_name)[0].version
+
+        # Set the model version to staging
+        mlflow.tracking.MlflowClient().transition_model_version_stage(
+            name=self.exp_name,
+            version=model_version,
+            stage="Staging",
+        )
