@@ -1,11 +1,11 @@
 import mlflow
 from fastapi import APIRouter, HTTPException
 
-from app.utils import set_seed, load_dataloader
 from app.schemas import TrainingParams
 from app.enums import ModelName, DatasetName, DeviceName, OptimizerName
 from models import CNN, CNNWithBN, MLP
 from engine import Trainer
+from utils import set_seed, load_dataloader
 
 
 router = APIRouter()
@@ -20,7 +20,7 @@ async def train_model_endpoint(
     weight_decay: float = 0.005,
     batch_size: int = 32,
     valid_size: float = 0.2,
-    device: DeviceName = "mps",
+    device: DeviceName = "cpu",
     optimizer_name: OptimizerName = "sgd",
     exp_name: str = "experiment",
     seed: int = 42,
