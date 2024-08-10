@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "mlops-tutorial"
 version = "0.1.0"
-description = ""
+description = "A tutorial project demonstrating MLOps practices with FastAPI and PyTorch."
 authors = ["Sangh0 <hop7311@gmail.com>"]
 license = "MIT"
 readme = "README.md"
@@ -12,6 +12,8 @@ torch = "^2.4.0"
 torchvision = "^0.19.0"
 fastapi = "^0.111.1"
 mlflow = "^2.14.3"
+pyngrok = "^7.2.0"
+python-dotenv = "^1.0.1"
 
 
 [build-system]
