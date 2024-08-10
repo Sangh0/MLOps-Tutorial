@@ -26,8 +26,7 @@ MLOps-Tutorial is a demo project that leverages FastAPI for managing machine lea
 ## Usage
 
 **Model Training**
-- Example on Swagger UI
-    <img src = "https://github.com/user-attachments/assets/d39ca33a-4f47-4612-87b8-31670bb76601">
+![Example on Swagger UI](https://github.com/user-attachments/assets/d39ca33a-4f47-4612-87b8-31670bb76601)
 
 **Evaluation**
 
