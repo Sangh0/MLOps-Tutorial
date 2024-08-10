@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install necessary system packages and Python 3.10
 RUN apt-get update && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
     python3.10 \
     python3-pip \
     python3-venv \
@@ -30,11 +30,17 @@ WORKDIR /app
 # Copy poetry configuration files
 COPY pyproject.toml poetry.lock ./
 
+# Configure Poetry to not use virtual environments
+RUN poetry config virtualenvs.create false
+
 # Install dependencies using Poetry
-RUN poetry config virtualenvs.create false && poetry install --no-dev
+RUN poetry install --no-dev
 
 # Copy the rest of the application code
 COPY . .
+
+# Ensure correct permissions for all copied files
+RUN chmod -R 755 /app
 
 # Expose port 8000 for FastAPI
 EXPOSE 8000
