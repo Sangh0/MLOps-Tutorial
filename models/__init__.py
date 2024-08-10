@@ -1,3 +1,3 @@
-from cnn import CNN
-from cnn_with_bn import CNNWithBN
-from mlp import MLP
+from models.cnn import CNN
+from models.cnn_with_bn import CNNWithBN
+from models.mlp import MLP
