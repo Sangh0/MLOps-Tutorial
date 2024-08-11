@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from pyngrok import ngrok
 
 from app.routers import train, evaluate, inference
-from config.config import Config
+from config import Config
 
 
 app = FastAPI(
@@ -14,9 +14,9 @@ app = FastAPI(
 )
 
 
-app.include_router(train.router, prefix="/train", tags=["train"])
-app.include_router(evaluate.router, prefix="/evaluate", tags=["evaluate"])
-app.include_router(inference.router, prefix="/inference", tags=["inference"])
+app.include_router(train.router, prefix="", tags=["train"])
+app.include_router(evaluate.router, prefix="", tags=["evaluate"])
+app.include_router(inference.router, prefix="", tags=["inference"])
 
 
 @app.get("/")
