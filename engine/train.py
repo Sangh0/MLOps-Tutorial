@@ -32,11 +32,11 @@ class Trainer(object):
             lr=lr,
             weight_decay=weight_decay,
         )
-        self.model_registry = "./runs/"
+
         self.exp_name = exp_name
         self.mlflow_run = mlflow_run
-        os.makedirs(self.model_registry + f"{self.exp_name}", exist_ok=True)
-
+        os.makedirs(f"runs/{self.exp_name}", exist_ok=True)
+        
         self.logger = logging.getLogger("Training")
         self.logger.setLevel(logging.INFO)
         stream_handler = logging.StreamHandler()
@@ -101,12 +101,12 @@ class Trainer(object):
 
             if best_loss > valid_loss:
                 self.logger.info(
-                    f"# loss decreased at epoch {epoch+1} ({best_loss} --> {valid_loss}), saving model..."
+                    f"# loss decreased at epoch {epoch+1} ({best_loss:.4f} --> {valid_loss:.4f}), saving model..."
                 )
                 best_loss = valid_loss
                 torch.save(
                     self.model.state_dict(),
-                    self.model_registry + f"{self.exp_name}/best_model.pt",
+                    f"runs/{self.exp_name}/best_model.pt",
                 )
 
             # log metrics
@@ -124,13 +124,14 @@ class Trainer(object):
                 f"Valid loss: {valid_loss:.3f}, Valid accuracy: {valid_acc:.3f}\n"
             )
 
+        # Save and register the model
         mlflow.pytorch.log_model(self.model, "models")
-        # Register the model
-        model_uri = f"runs:/{self.mlflow_run.info.run_id}/model"
+        model_uri = f"runs/{self.mlflow_run.info.run_id}/model"
         mlflow.register_model(model_uri, self.exp_name)
 
         # Get the latest model version
-        model_version = mlflow.get_latest_versions(self.exp_name)[0].version
+        client = mlflow.pytorch.MlflowClient()
+        model_version = client.get_latest_versions(self.exp_name)[0].version
 
         # Set the model version to staging
         mlflow.tracking.MlflowClient().transition_model_version_stage(
