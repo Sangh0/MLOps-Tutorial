@@ -44,33 +44,34 @@ async def train_model_endpoint(
     try:
         mlflow.set_experiment(exp_name)
 
-        with mlflow.start_run():
+        with mlflow.start_run() as mlflow_run:
             mlflow.log_params(params.dict())
 
-        train_loader, valid_loader = load_dataloader(
-            dataset_name=params.dataset_name,
-            batch_size=params.batch_size,
-            valid_size=params.valid_size,
-        )
+            train_loader, valid_loader = load_dataloader(
+                dataset_name=params.dataset_name,
+                batch_size=params.batch_size,
+                valid_size=params.valid_size,
+            )
 
-        if params.model_name == "cnn":
-            model = CNN()
-        elif params.model_name == "cnn_with_bn":
-            model = CNNWithBN()
-        else:
-            model = MLP()
+            if params.model_name == "cnn":
+                model = CNN()
+            elif params.model_name == "cnn_with_bn":
+                model = CNNWithBN()
+            else:
+                model = MLP()
 
-        trainer = Trainer(
-            device=params.device,
-            model=model,
-            lr=params.learning_rate,
-            weight_decay=params.weight_decay,
-            epochs=params.epochs,
-            optimizer_name=params.optimizer_name,
-            exp_name=params.exp_name,
-        )
+            trainer = Trainer(
+                device=params.device,
+                model=model,
+                lr=params.learning_rate,
+                weight_decay=params.weight_decay,
+                epochs=params.epochs,
+                optimizer_name=params.optimizer_name,
+                exp_name=params.exp_name,
+                mlflow_run=mlflow_run,
+            )
 
-        trainer.fit(train_loader, valid_loader)
+            trainer.fit(train_loader, valid_loader)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
