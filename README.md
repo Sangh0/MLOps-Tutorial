@@ -65,10 +65,33 @@ MLOps-Tutorial is a demo project that leverages FastAPI for managing machine lea
 - Not Implemented
 
 **Accessing the Container**
-    ``bash     docker exec -it mlops-container /bin/bash     ``
+   ```bash     
+   docker exec -it mlops-container /bin/bash
+   ```
 
 **Accessing the MLflow UI**
-    ``bash     mlflow server --host 0.0.0.0 --port 8001     ``
+   ```bash
+   # Note: Please access the Container
+   mlflow server --host 0.0.0.0 --port 8001
+   ```
+   ![2024-08-1212 13 14-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/17553652-e9a6-430f-83f4-2153ae550afe)
+
+## Future Works
+While this project has made significant strides, several areas remain for futre enhancement and development:
+1. Hyperparameter Tuning:
+    - Incorporate advanced hyperparameter tuning methods, such ad Grid Search and Random Search, in addition to [AutoML](https://cloud.google.com/automl?hl=en), to further optimize model performance.
+
+2. Model Interpretability:
+    - Integrate tools and techniques for model interpretability, such as [SHAP](https://shap.readthedocs.io/en/latest/) and [LIME](https://github.com/marcotcr/lime), to improve transparency and understanding of model predictions.
+
+3. Deployment and Monitoring:
+    - Enhance deployment strategies with robust monitorig and maintenance systems to detect and address performance degradation in real-time.
+
+4. Integration with Other Tools:
+    - Explore integration with other MLOps tools and platforms (e.g., TensorBoard, Weights & Biases) to create a more flexible and powerful workflow.
+
+5. User Interface Improvements:
+    - Improve the user interface (UI) to make the processes of model training, evaluation, and inference more intuitive and user-friendly.
 
 ## License
 
