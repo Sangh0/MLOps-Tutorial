@@ -61,8 +61,7 @@ MLOps-Tutorial is a demo project that leverages FastAPI for managing machine lea
 - POST to `'/inference'` to get predictions from a trained model.
 
 **Export**
-
-- Not Implemented
+- POST to `'/get_quantized_model'` to get quantized model.
 
 **Accessing the Container**
    ```bash     
