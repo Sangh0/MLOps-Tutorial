@@ -6,6 +6,8 @@ MLOps-Tutorial is a demo project that leverages FastAPI for managing machine lea
 
 ## Features
 
+- Implemented Models: Includes support for [CNN](https://github.com/Sangh0/MLOps-Tutorial/blob/main/models/cnn.py), [CNN with Batch Normalization](https://github.com/Sangh0/MLOps-Tutorial/blob/main/models/cnn_with_bn.py), and [MLP](https://github.com/Sangh0/MLOps-Tutorial/blob/main/models/mlp.py).
+- Supported Datasets: Compatible with popular datasets such as MNIST, FashionMNIST, CIFAR10, CIFAR100.
 - Model Training: Endpoints to train models with customizable parameters.
 - Model Evaluation: Endpoints to evaluate model performance.
 - Model Ineference: Endpoints for running inference on trained models.
@@ -30,18 +32,17 @@ MLOps-Tutorial is a demo project that leverages FastAPI for managing machine lea
    ```
 2. Install Dependencies
 
-    ```bash
-    poetry install
-    ```
+   ```bash
+   poetry install
+   ```
 3. Configure Environment Variables
-    Create a `./config/.env` file and necessary environment variables.
-
+   Create a `./config/.env` file and necessary environment variables.
 4. Build and Run with Docker
 
-    ```bash
-    docker build -t mlops .
-    docker run -p 8000:8000 -p 8001:8001 --name mlops-container mlops
-    ```
+   ```bash
+   docker build -t mlops .
+   docker run -p 8000:8000 -p 8001:8001 --name mlops-container mlops
+   ```
 
 ## Usage
 
@@ -64,14 +65,10 @@ MLOps-Tutorial is a demo project that leverages FastAPI for managing machine lea
 - Not Implemented
 
 **Accessing the Container**
-    ```bash
-    docker exec -it mlops-container /bin/bash
-    ```
+    ``bash     docker exec -it mlops-container /bin/bash     ``
 
 **Accessing the MLflow UI**
-    ```bash
-    mlflow server --host 0.0.0.0 --port 8001
-    ```
+    ``bash     mlflow server --host 0.0.0.0 --port 8001     ``
 
 ## License
 
