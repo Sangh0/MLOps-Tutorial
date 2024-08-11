@@ -1,6 +1,6 @@
 import torch
 
-from utils.utils import cal_accuracy
+from utils import cal_accuracy
 
 
 @torch.no_grad()

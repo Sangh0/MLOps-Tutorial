@@ -37,6 +37,15 @@ def get_mlflow_ui_url():
     return {"MLflow Tracking UI": ngrok_tunnel.public_url}
 
 
+@app.post("/get_quantized_model")
+def get_quantized_model(model_name: str, weight_dir: str, save_dir: str):
+    from engine import Exporter
+    
+    exporter = Exporter(model_name=model_name, weight_dir=weight_dir, save_dir=save_dir)
+    quantized_model = exporter()
+    return {"message": f"Quantized model saved to {save_dir}"}
+
+
 def main():
     print(f"Authentication Key: {Config.AUTH_TOKEN}")
     print(f"Data Directory: {Config.DATA_DIR}")
