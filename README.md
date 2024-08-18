@@ -50,7 +50,8 @@ MLOps-Tutorial is a demo project that leverages FastAPI for managing machine lea
 
 - POST to `/train_model` with parameters such as `model_name`, `dataset_name`, `epochs`, and others.
 - Example on Swagger UI
-  ![example_gif](https://github.com/user-attachments/assets/244a2ed7-df81-44ce-996f-6771c9bc7d7d)
+
+   ![example_gif](https://github.com/user-attachments/assets/244a2ed7-df81-44ce-996f-6771c9bc7d7d)
 
 **Evaluation**
 
