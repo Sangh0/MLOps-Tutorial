@@ -3,7 +3,7 @@ import torchvision.transforms as transforms
 
 from PIL import Image
 
-from models import CNN, CNNWithBN, MLP
+from app.models import CNN, CNNWithBN, MLP
 
 
 def load_image(img_path: str):

@@ -1,6 +1,6 @@
 import torch
 
-from models import CNN, CNNWithBN, MLP
+from app.models import CNN, CNNWithBN, MLP
 
 
 class Exporter(object):
@@ -26,7 +26,6 @@ class Exporter(object):
         dummy_input = torch.randn(1, 1, 28, 28)
         quantized_model(dummy_input)
         quantized_model.save(self.save_dir)
-        print(f"Quantized model saved to {self.save_dir}")
         return quantized_model
 
     def export(self, backend="x86"):

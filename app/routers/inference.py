@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException
 
 from app.schemas import InferenceParams
 from app.enums import ModelName, DeviceName
-from engine import inference
+from app.engine import inference
 
 
 router = APIRouter()

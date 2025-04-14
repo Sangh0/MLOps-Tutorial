@@ -1,6 +1,6 @@
 import torch
 
-from utils import cal_accuracy
+from app.utils import cal_accuracy
 
 
 @torch.no_grad()
@@ -15,4 +15,4 @@ def evaluate(device, model, test_loader):
         acc = cal_accuracy(outputs, labels)
         test_acc += acc.item()
 
-    print(f"Test Accuracy: {test_acc/(batch+1):.3f}")
+    return test_acc / (batch + 1)

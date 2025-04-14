@@ -4,9 +4,9 @@ from fastapi import APIRouter, HTTPException
 
 from app.schemas import EvaluateParams
 from app.enums import ModelName, DatasetName, DeviceName
-from engine import evaluate
-from models import CNN, CNNWithBN, MLP
-from utils import load_dataloader
+from app.engine import evaluate
+from app.models import CNN, CNNWithBN, MLP
+from app.utils import load_dataloader
 
 
 router = APIRouter()

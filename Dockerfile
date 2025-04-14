@@ -34,13 +34,10 @@ COPY pyproject.toml poetry.lock ./
 RUN poetry config virtualenvs.create false
 
 # Install dependencies using Poetry
-RUN poetry install --no-dev
+RUN poetry install --only main --no-root
 
 # Copy the rest of the application code
 COPY . .
-
-# Ensure correct permissions for all copied files
-RUN chmod -R 755 /app
 
 # Expose port 8000 for FastAPI
 EXPOSE 8000

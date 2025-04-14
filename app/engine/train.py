@@ -5,7 +5,7 @@ import mlflow.pytorch
 import torch
 import torch.nn as nn
 
-from utils.utils import cal_accuracy, load_optimizer
+from app.utils import cal_accuracy, load_optimizer
 
 
 class Trainer(object):
@@ -36,23 +36,6 @@ class Trainer(object):
         self.exp_name = exp_name
         self.mlflow_run = mlflow_run
         os.makedirs(f"runs/{self.exp_name}", exist_ok=True)
-        
-        self.logger = logging.getLogger("Training")
-        self.logger.setLevel(logging.INFO)
-        stream_handler = logging.StreamHandler()
-        self.logger.addHandler(stream_handler)
-
-        self.logger.info(
-            f"##### Training Settings #####\n"
-            f"{' ' * 3} - Device: {self.device}\n"
-            f"{' ' * 3} - Model: {model.__class__.__name__}\n"
-            f"{' ' * 3} - Optimizer: {optimizer_name}\n"
-            f"{' ' * 3} - Learning Rate: {lr}\n"
-            f"{' ' * 3} - Weight Decay: {weight_decay}\n"
-            f"{' ' * 3} - Epochs: {epochs}\n"
-            f"{' ' * 3} - Experiment Name: {exp_name}\n"
-            f"#############################\n"
-        )
 
     def train_on_batch(self, model, train_loader):
         model.train()
@@ -100,9 +83,6 @@ class Trainer(object):
             self.logger.info(f"{'#'*50}")
 
             if best_loss > valid_loss:
-                self.logger.info(
-                    f"# loss decreased at epoch {epoch+1} ({best_loss:.4f} --> {valid_loss:.4f}), saving model..."
-                )
                 best_loss = valid_loss
                 torch.save(
                     self.model.state_dict(),
@@ -115,14 +95,6 @@ class Trainer(object):
             mlflow.log_metric("valid_loss", valid_loss, step=epoch)
             mlflow.log_metric("valid_acc", valid_acc, step=epoch)
             mlflow.log_metric("lr", self.optimizer.param_groups[0]["lr"])
-
-            self.logger.info(f"Epoch {epoch+1}/{self.epochs}")
-            self.logger.info(
-                f"Train loss: {train_loss:.3f}, Train accuracy: {train_acc:.3f}"
-            )
-            self.logger.info(
-                f"Valid loss: {valid_loss:.3f}, Valid accuracy: {valid_acc:.3f}\n"
-            )
 
         # Save and register the model
         mlflow.pytorch.log_model(self.model, "models")

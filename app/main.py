@@ -1,10 +1,8 @@
 import uvicorn
 
 from fastapi import FastAPI
-from pyngrok import ngrok
 
 from app.routers import train, evaluate, inference
-from config import Config
 
 
 app = FastAPI(
@@ -19,38 +17,14 @@ app.include_router(evaluate.router, prefix="", tags=["evaluate"])
 app.include_router(inference.router, prefix="", tags=["inference"])
 
 
-@app.get("/")
-def read_root():
-    return {
-        "message": "Welcome to the CNN Training API. Visit /docs for API documentation."
-    }
-
-
-@app.post("/get_mlflow_ui_url")
-def get_mlflow_ui_url():
-    ngrok.kill()
-
-    NGROK_AUTH_TOKEN = Config.AUTH_TOKEN
-    ngrok.set_auth_token(NGROK_AUTH_TOKEN)
-
-    ngrok_tunnel = ngrok.connect(addr="5000", proto="http", bind_tls=True)
-    return {"MLflow Tracking UI": ngrok_tunnel.public_url}
-
-
 @app.post("/get_quantized_model")
 def get_quantized_model(model_name: str, weight_dir: str, save_dir: str):
     from engine import Exporter
-    
+
     exporter = Exporter(model_name=model_name, weight_dir=weight_dir, save_dir=save_dir)
     quantized_model = exporter()
     return {"message": f"Quantized model saved to {save_dir}"}
 
 
-def main():
-    print(f"Authentication Key: {Config.AUTH_TOKEN}")
-    print(f"Data Directory: {Config.DATA_DIR}")
-
-
 if __name__ == "__main__":
-    main()
     uvicorn.run(app, host="0.0.0.0", port=8000)

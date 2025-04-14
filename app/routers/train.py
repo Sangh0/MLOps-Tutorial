@@ -3,9 +3,9 @@ from fastapi import APIRouter, HTTPException
 
 from app.schemas import TrainingParams
 from app.enums import ModelName, DatasetName, DeviceName, OptimizerName
-from models import CNN, CNNWithBN, MLP
-from engine import Trainer
-from utils import set_seed, load_dataloader
+from app.models import CNN, CNNWithBN, MLP
+from app.engine import Trainer
+from app.utils import set_seed, load_dataloader
 
 
 router = APIRouter()
