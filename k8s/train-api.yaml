@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mnist-train
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mnist-train
+  template:
+    metadata:
+      labels:
+        app: mnist-train
+    spec:
+      containers:
+        - name: mnist-train
+          image: sangho3/mnist-api:latest
+          command: ["uvicorn", "app.main_train:app", "--host", "0.0.0.0", "--port", "8000"]
+          ports:
+            - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mnist-train-svc
+spec:
+  selector:
+    app: mnist-train
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000

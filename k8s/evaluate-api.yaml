@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mnist-evaluate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mnist-evaluate
+  template:
+    metadata:
+      labels:
+        app: mnist-evaluate
+    spec:
+      containers:
+        - name: mnist-evaluate
+          image: sangho3/mnist-api:latest
+          command: ["uvicorn", "app.main_evaluate:app", "--host", "0.0.0.0", "--port", "8000"]
+          ports:
+            - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mnist-evaluate-svc
+spec:
+  selector:
+    app: mnist-evaluate
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
